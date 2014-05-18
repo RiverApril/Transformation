@@ -12,9 +12,11 @@ public class Structure {
 	}
 
 	public void draw(Program program, boolean fill) {
-		camera.applyInvertedMatrix();
+		//camera.applyInvertedMatrix();
+		GL11.glTranslatef(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 		vbo.draw(fill);
-		camera.applyMatrix();
+		GL11.glTranslatef(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
+		//camera.applyMatrix();
 	}
 
 	public void initVBOs(Program program) {

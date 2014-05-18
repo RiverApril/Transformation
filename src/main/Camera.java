@@ -12,7 +12,7 @@ public class Camera {
 	private Vector3f eyePosition = new Vector3f(0f, 0f, 0f);      // world space coordinates.
 
 	// Orientation of camera axes.
-	private Quaternion orientation = new Quaternion(0f, 0f, 0f, 1f); // Identity.
+	public Quaternion orientation = new Quaternion(0f, 0f, 0f, 1f); // Identity.
 
 	// Standard reference axes.
 	public static final Vector3f X_AXIS = new Vector3f(1f, 0f, 0f);

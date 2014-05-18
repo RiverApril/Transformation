@@ -30,8 +30,8 @@ public class Player3D {
 		if(Mouse.isGrabbed()){
 			Mouse.setCursorPosition((Display.getWidth() / 2), (Display.getHeight() / 2));
 
-			structure.camera.pitch((float)Math.toRadians(-ydiff/2));
-			structure.camera.yaw((float)Math.toRadians(xdiff/2));
+			structure.camera.pitch((float)Math.toRadians(-ydiff/2.0));
+			structure.camera.yaw((float)Math.toRadians(xdiff/2.0));
 			
 			program.viewOffset.x = (xdiff/100.0);
 			program.viewOffset.y = -4+(ydiff/100.0);
@@ -84,30 +84,27 @@ public class Player3D {
 	}
 
 	private Vector3f checkCollision(Area area, Vector3f newPlace) {
-		RectPrism nBounds = new RectPrism(new Vector3d(bounds.getPosition().x+newPlace.x, bounds.getPosition().y, bounds.getPosition().z), bounds.getRadii());
+		RectPrism xBounds = new RectPrism(new Vector3d(bounds.getPosition().x+newPlace.x, bounds.getPosition().y, bounds.getPosition().z), bounds.getRadii());
+		RectPrism yBounds = new RectPrism(new Vector3d(bounds.getPosition().x, bounds.getPosition().y+newPlace.y, bounds.getPosition().z), bounds.getRadii());
+		RectPrism zBounds = new RectPrism(new Vector3d(bounds.getPosition().x, bounds.getPosition().y, bounds.getPosition().z+newPlace.z), bounds.getRadii());
+		
 		for(int i=0;i<area.rectPrisms.size();i++){
 			RectPrism rectPrism = area.rectPrisms.get(i);
-			if(rectPrism.collides(nBounds)){
+			if(rectPrism.collides(xBounds)){
 				newPlace.x = 0;
 			}
-		}
-		nBounds = new RectPrism(new Vector3d(bounds.getPosition().x, bounds.getPosition().y+newPlace.y, bounds.getPosition().z), bounds.getRadii());
-		for(int i=0;i<area.rectPrisms.size();i++){
-			RectPrism rectPrism = area.rectPrisms.get(i);
-			if(rectPrism.collides(nBounds)){
+			if(rectPrism.collides(yBounds)){
 				newPlace.y = 0;
 			}
-		}
-		nBounds = new RectPrism(new Vector3d(bounds.getPosition().x, bounds.getPosition().y, bounds.getPosition().z+newPlace.z), bounds.getRadii());
-		for(int i=0;i<area.rectPrisms.size();i++){
-			RectPrism rectPrism = area.rectPrisms.get(i);
-			if(rectPrism.collides(nBounds)){
+			if(rectPrism.collides(zBounds)){
 				newPlace.z = 0;
 			}
 		}
+		
+		
 		return newPlace;
 	}
-	
+
 	public RectPrism getRectPrism(){
 		return bounds;
 	}

@@ -26,7 +26,7 @@ public class Area {
 		vboQuads = new Vbo(GL11.GL_QUADS);
 		
 		for(int i=0;i<rectPrisms.size();i++){
-			//vboQuads.setColor(new Color(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()));
+			vboQuads.setColor(new Color(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()));
 			vboQuads.addRectPrism(rectPrisms.get(i));
 		}
 		
