@@ -77,10 +77,11 @@ public class Program {
 		GL11.glLoadIdentity();
 		
 		player.update(this);
+		currentArea.update(this);
 
 		GL11.glTranslated(viewOffset.x, viewOffset.y, viewOffset.z);
 		
-		player.structure.camera.applyMatrix();
+		player.camera.applyMatrix();
 		
 		GL11.glPushMatrix();
 

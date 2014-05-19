@@ -60,6 +60,10 @@ public class Camera {
 		translate(vec.x, vec.y, vec.z);
 	}
 
+	public void translate(Vector3d vec) {
+		translate((float)vec.x, (float)vec.y, (float)vec.z);
+	}
+
 	// --------------------------------------------------------------------------
 	/**
 	 * Translates the camera relative to itself.

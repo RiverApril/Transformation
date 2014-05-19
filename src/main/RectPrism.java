@@ -8,6 +8,8 @@ public class RectPrism {
 	private Vector3d radii;
 	private Vector3d min;
 	private Vector3d max;
+	
+	public Vector3d motion = new Vector3d();
 
 	public RectPrism(Vector3d position, Vector3d radii) {
 		this.position = position;
@@ -32,12 +34,22 @@ public class RectPrism {
 		this.max = position.add(radii);
 	}
 
+	public void setPosition(Vector3d pos) {
+		this.position.set(pos);
+		this.min = position.sub(radii);
+		this.max = position.add(radii);
+	}
+
 	public Vector3d getPosition() {
 		return position;
 	}
 
 	public Vector3d getRadii() {
 		return radii;
+	}
+
+	public double getMass() {
+		return 2*(radii.x*radii.y*4)+(radii.x*radii.z*4)+(radii.y*radii.z*4);
 	}
 
 }
