@@ -21,7 +21,7 @@ public class Program {
 	public long tick = 0;
 
 	public Area currentArea;
-	public Player3D player;
+	public Player player;
 	
 	public Vector3d viewOffset = new Vector3d();
 
@@ -47,8 +47,9 @@ public class Program {
 
 	private void init() throws LWJGLException {
 		KeyboardControl.init();
-		player = new Player3D();
+		player = new Player();
 		currentArea = new Area();
+		//currentArea.createRandomBoxes();
 	}
 
 	private void initVBOs() {
