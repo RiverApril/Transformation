@@ -10,6 +10,7 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class Program {
 
@@ -48,7 +49,7 @@ public class Program {
 	private void init() throws LWJGLException {
 		KeyboardControl.init();
 		player = new Player();
-		currentArea = new Area();
+		currentArea = new Ship();
 		//currentArea.createRandomBoxes();
 	}
 
@@ -74,33 +75,51 @@ public class Program {
 			
 		}
 		
+		player.update(this);
+		currentArea.update(this);
+		
+		drawGL();
+	}
+
+	private void drawGL() {
+		GL11.glDepthMask(true);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		
 		GL11.glLoadIdentity();
 		
-		player.update(this);
-
 		GL11.glTranslated(viewOffset.x, viewOffset.y, viewOffset.z);
 		
 		player.structure.camera.applyMatrix();
 		
-		GL11.glPushMatrix();
-
-		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-		GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
-		GL11.glPolygonOffset(1, 1);
-		GL11.glColor3f(1, 1, 1);
-		currentArea.draw(this, true, 0);
-		player.draw(this, true);
-		GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glAlphaFunc(GL11.GL_EQUAL, 1);
 		
-		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-		GL11.glColor3f(0, 0, 0);
-		currentArea.draw(this, false, 0);
-		player.draw(this, false);
+		draw(true);
 		
-		GL11.glPopMatrix();
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDepthMask(false);
+		GL11.glAlphaFunc(GL11.GL_LESS, 1);
+		
+		draw(false);
+		
+	}
 
-		//player.structure.camera.applyInvertedMatrix();
+	private void draw(boolean fill) {
+	
+			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+			GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+			GL11.glPolygonOffset(1, 1);
+			GL11.glColor3f(1, 1, 1);
+			currentArea.draw(this, true, 0);
+			player.draw(this, true);
+			GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
+		if(fill){
+			
+			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+			GL11.glColor3f(0, 0, 0);
+			currentArea.draw(this, false, 0);
+			player.draw(this, false);
+		}
 	}
 
 	private void initDisplay(int width, int height) throws LWJGLException {
@@ -124,8 +143,7 @@ public class Program {
 		GL11.glLoadIdentity();
 		
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		
-		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
 	}

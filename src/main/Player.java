@@ -16,7 +16,7 @@ public class Player {
 	private RectPrism bounds = new RectPrism(new Vector3d(structure.camera.getPosition()), new Vector3d(1, 1, 1));
 
 	public Player(){
-		structure.camera.setPosition(10, 10, 10);
+		structure.camera.setPosition(0, 0, 0);
 	}
 	
 	public void draw(Program program, boolean fill){

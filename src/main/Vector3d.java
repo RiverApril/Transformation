@@ -43,4 +43,8 @@ public class Vector3d {
 		return new Vector3d(this.x+other.x, this.y+other.y, this.z+other.z);
 	}
 
+	public static Vector3d sub(Vector3f a, Vector3f b) {
+		return new Vector3d(a.x-b.x, a.y-b.y, a.z-b.z);
+	}
+
 }

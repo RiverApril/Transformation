@@ -80,22 +80,4 @@ public class MathUtils {
 	    return Math.abs(a - b) <= EPSILON * (Math.abs(a) + Math.abs(b) + 1f);
 	}
 
-	public static void main(String args[]) {
-	    printComparisonResults(0.00000004f, 0.0f, "Small value test");
-	    printComparisonResults(4.000001f, 4.000002f, "Medium value test");
-	    printComparisonResults(1234567.1f, 1234567.2f, "Large value test");
-	}
-
-	private static void printComparisonResults(float a, float b, String testName){
-	    System.out.println(testName);
-	    System.out.println("a=" + a + ", " + "b=" + b);
-	    System.out.println("Math.abs(a - b) : " + Math.abs(a - b));
-	    System.out.println("a == b : " + (a == b));
-	    System.out.print("floatEqualsRel(a, b) : " + floatEqualsRel(a, b));
-	    System.out.println("\ttolerance = " + (EPSILON * (Math.abs(a) + Math.abs(b) + 1f)));
-	    System.out.print("floatEqualsAbs(a, b) : " + floatEqualsAbs(a, b, EPSILON));
-	    System.out.println("\ttolerance = " + EPSILON);
-	    System.out.println();
-	}
-
 }

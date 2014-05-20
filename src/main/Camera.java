@@ -335,6 +335,10 @@ public class Camera {
 
 		return viewMatrix;
 	}
+	
+	public Vector3f getRay(){
+		return (Vector3f) new Vector3f(eyePosition.x - centerPosition.x, eyePosition.y - centerPosition.y, eyePosition.z - centerPosition.z).normalise();
+	}
 
 	public void applyMatrix() {
 		Matrix4f matrix = getViewMatrix();

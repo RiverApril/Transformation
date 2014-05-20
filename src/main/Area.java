@@ -35,6 +35,10 @@ public class Area {
 		
 		vboQuads.end();
 	}
+	
+	public void update(Program program){
+		
+	}
 
 	public void draw(Program program, boolean fill, int i) {
 		vboQuads.draw(fill);

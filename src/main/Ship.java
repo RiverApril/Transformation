@@ -1,13 +1,17 @@
 package main;
 
-import java.util.Random;
-
 import org.lwjgl.opengl.GL11;
 
 public class Ship extends Area {
 	
+	private boolean needsUpdate = false;
+
 	public Ship(){
-		rectPrisms.add(new RectPrism(new Vector3d(0, 0, 0), new Vector3d(5, .1, 1)));
+		rectPrisms.add(new RectPrism(new Vector3d(0, -2, 0), new Vector3d(4, .1, 4)));
+		rectPrisms.add(new RectPrism(new Vector3d(0, .1, -4.1), new Vector3d(4, 2, .1)));
+		rectPrisms.add(new RectPrism(new Vector3d(0, .1, 4.1), new Vector3d(4, 2, .1)));
+		rectPrisms.add(new RectPrism(new Vector3d(-4.1, .1, 0), new Vector3d(.1, 2, 4)));
+		rectPrisms.add(new RectPrism(new Vector3d(4.1, .1, 0), new Vector3d(.1, 2, 4)));
 	}
 
 	@Override
@@ -21,6 +25,15 @@ public class Ship extends Area {
 		}
 		
 		vboQuads.end();
+	}
+	
+	@Override
+	public void update(Program program){
+		if(needsUpdate){
+			initVBOs(program);
+			needsUpdate = false;
+		}
+		
 	}
 
 }

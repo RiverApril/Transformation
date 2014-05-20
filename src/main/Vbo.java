@@ -9,14 +9,14 @@ import org.lwjgl.opengl.GL11;
 public class Vbo {
 
 	private ArrayList<Vector3d> vertexList = new ArrayList<Vector3d>();
-	private ArrayList<Vector3d> colorList = new ArrayList<Vector3d>();
+	private ArrayList<Vector4d> colorList = new ArrayList<Vector4d>();
 	
 	private DoubleBuffer vBuffer;
 	private DoubleBuffer cBuffer;
 	private int count = 0;
 	private int mode;
 	
-	private Vector3d currentColor = Color.red;
+	private Vector4d currentColor = Color.red;
 
 	public Vbo(int mode) {
 		this.mode = mode;
@@ -31,15 +31,15 @@ public class Vbo {
 		vertexList.clear();
 		vBuffer.flip();
 		
-		cBuffer = BufferUtils.createDoubleBuffer(colorList.size()*3);
-		for(Vector3d v : colorList){
-			cBuffer.put(v.x).put(v.y).put(v.z);
+		cBuffer = BufferUtils.createDoubleBuffer(colorList.size()*4);
+		for(Vector4d v : colorList){
+			cBuffer.put(v.w).put(v.x).put(v.y).put(v.z);
 		}
 		colorList.clear();
 		cBuffer.flip();
 	}
 
-	public void add(Vector3d vertex, Vector3d color) {
+	public void add(Vector3d vertex, Vector4d color) {
 		colorList.add(color);
 		vertexList.add(vertex);
 		count++;
@@ -59,7 +59,7 @@ public class Vbo {
 		GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 		if(useColor)GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
 
-		if(useColor)GL11.glColorPointer(3, 3<<3, cBuffer);
+		if(useColor)GL11.glColorPointer(4, 4<<3, cBuffer);
 		GL11.glVertexPointer(3, 3<<3, vBuffer);
 		GL11.glDrawArrays(mode, 0, count);
 		
@@ -131,7 +131,7 @@ public class Vbo {
 		add(new Vector3d(pos.x+radii.x, pos.y-radii.y, pos.z+radii.z));
 	}
 	
-	public void setColor(Vector3d color){
+	public void setColor(Vector4d color){
 		currentColor = color;
 	}
 
