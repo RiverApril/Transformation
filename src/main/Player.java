@@ -35,7 +35,7 @@ public class Player {
 		if(thirdPersonMode){
 			structure.draw(program, fill);
 		}
-		placeVbo.draw(fill);
+		//placeVbo.draw(fill);
 	}
 	
 	public void update(Program program) {
@@ -117,7 +117,7 @@ public class Player {
 			thirdPersonMode = !thirdPersonMode;
 		}
 		
-		//if(MouseControl.pressed(MouseControl.ButtonLeft) || MouseControl.pressed(MouseControl.ButtonRight)){
+		/*if(MouseControl.pressed(MouseControl.ButtonLeft) || MouseControl.pressed(MouseControl.ButtonRight)){
 			double i;
 			double lastGoodLength = 0;
 			boolean exit = false;
@@ -244,7 +244,7 @@ public class Player {
 				}
 				
 			}
-			
+		}*/
 
 	}
 
