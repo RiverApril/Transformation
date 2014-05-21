@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.Font;
 import java.nio.FloatBuffer;
 import java.util.Random;
 
@@ -27,6 +28,7 @@ public class Program {
 	
 	public Vector3d viewOffset = new Vector3d();	
 	public Vector3d guiViewOffset = new Vector3d();
+	
 	
 	private Vbo guiVbo = new Vbo();
 
@@ -56,6 +58,7 @@ public class Program {
 	private void init() throws LWJGLException {
 		KeyboardControl.init();
 		MouseControl.init();
+		
 		player = new Player();
 		currentArea = new Ship();
 		//currentArea.createRandomBoxes();
@@ -114,6 +117,7 @@ public class Program {
 		//GL11.glTranslated(guiViewOffset.x, guiViewOffset.y, guiViewOffset.z);
 		GL11.glRotated(guiViewOffset.x*100, 0, -1, 0);
 		GL11.glRotated(guiViewOffset.y*100, 1, 0, 0);
+
 		
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glAlphaFunc(GL11.GL_EQUAL, 1);

@@ -178,6 +178,7 @@ public class Player {
 					}
 				}
 				
+				Color o;
 				if(!rp.collides(bounds)){
 					
 					if(MouseControl.pressed(MouseControl.ButtonRight)){
@@ -185,12 +186,14 @@ public class Player {
 						program.currentArea.needsUpdate = true;
 						
 					}
-
-					placeVbo.begin(GL11.GL_QUADS);
-					placeVbo.setColor(new Color(0, 0, 1, .1));
-					placeVbo.addRectPrism(rp, xDown?Color.tRed:Color.tGray, yDown?Color.tGreen:Color.tGray, zDown?Color.tBlue:Color.tGray);
-					placeVbo.end();
+					o = Color.tGray;
+				}else{
+					o = Color.tViolet;
 				}
+				placeVbo.begin(GL11.GL_QUADS);
+				placeVbo.addRectPrism(rp, xDown?Color.tRed:o, yDown?Color.tGreen:o, zDown?Color.tBlue:o);
+				placeVbo.end();
+
 				
 				int dWheel = Mouse.getDWheel();
 				if(xDown){
@@ -228,6 +231,16 @@ public class Player {
 				}
 				if(placeRadii.z<l2){
 					placeRadii.z=l2;
+				}
+				
+				if(placeRadii.x>3){
+					placeRadii.x=3;
+				}
+				if(placeRadii.y>3){
+					placeRadii.y=3;
+				}
+				if(placeRadii.z>3){
+					placeRadii.z=3;
 				}
 				
 			}

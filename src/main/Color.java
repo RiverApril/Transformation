@@ -18,5 +18,6 @@ public class Color extends Vector4d{
 	public static Color tGreen = new Color(0, 1, 0, .2);
 	public static Color tBlue = new Color(0, 0, 1, .2);
 	public static Color tGray = new Color(.5, .5, .5, .2);
+	public static Color tViolet = new Color(1, 0, 1, .2);
 
 }
