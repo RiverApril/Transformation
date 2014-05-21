@@ -26,7 +26,7 @@ public class RectPrism {
 
 	}
 
-	public void setPosition(Vector3f pos) {
+	public void setPosition(Vector3d pos) {
 		this.position.set(pos);
 		this.min = position.sub(radii);
 		this.max = position.add(radii);
@@ -38,6 +38,21 @@ public class RectPrism {
 
 	public Vector3d getRadii() {
 		return radii;
+	}
+
+	public void setRadii(int x, int y, int z) {
+		radii.x = x;
+		radii.y = y;
+		radii.z = z;
+		this.min = position.sub(radii);
+		this.max = position.add(radii);
+		
+	}
+
+	public void setRadii(Vector3d radii) {
+		this.radii.set(radii);
+		this.min = position.sub(radii);
+		this.max = position.add(radii);
 	}
 
 }

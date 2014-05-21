@@ -35,6 +35,10 @@ public class KeyboardControl {
 	public static KeyBind keyRotateLeft = new KeyBind("Rotate Left", Keyboard.KEY_Q, ketBindList);
 	public static KeyBind keyRotateRight = new KeyBind("Rotate Right", Keyboard.KEY_E, ketBindList);
 	
+	public static KeyBind keyEditX = new KeyBind("Edit X", Keyboard.KEY_R, ketBindList);
+	public static KeyBind keyEditY = new KeyBind("Edit Y", Keyboard.KEY_F, ketBindList);
+	public static KeyBind keyEditZ = new KeyBind("Edit Z", Keyboard.KEY_V, ketBindList);
+	
 	public static ArrayList<KeyBind> hiddenKeyBindList = new ArrayList<KeyBind>();
 
 	public static KeyBind keyEscape = new KeyBind("Escape", Keyboard.KEY_ESCAPE, hiddenKeyBindList);
@@ -42,6 +46,8 @@ public class KeyboardControl {
 	public static KeyBind keyControl = new KeyBind("Control", Keyboard.KEY_LCONTROL, hiddenKeyBindList);
 	public static KeyBind keySpace = new KeyBind("Space", Keyboard.KEY_SPACE, hiddenKeyBindList);
 	public static KeyBind keyV = new KeyBind("V", Keyboard.KEY_V, hiddenKeyBindList);
+	
+	public static KeyBind keyToggleThirdPerson = new KeyBind("Third Person", Keyboard.KEY_F5, hiddenKeyBindList);
 
 	public static void init() throws LWJGLException {
 
@@ -76,6 +82,8 @@ public class KeyboardControl {
 		for (int i = 0; i < size; i++) {
 			released[releasedList.get(i)] = false;
 		}
+		pressedList.clear();
+		releasedList.clear();
 
 		while (Keyboard.next()) {
 

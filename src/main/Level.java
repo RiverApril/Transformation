@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 public class Level {
 
-	private Vbo VBO;
+	private Vbo VBO = new Vbo();
 	
 	public Line[][] walls = new Line[0][0];
 
@@ -44,7 +44,7 @@ public class Level {
 	}
 
 	public void initVBOs(Program program) {
-		VBO = new Vbo(GL11.GL_QUADS);
+		VBO.begin(GL11.GL_QUADS);
 		for(int y=0;y<ySize;y++){
 			for(Line wall : walls[y]){
 				if(wall!=null){

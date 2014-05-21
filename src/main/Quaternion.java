@@ -14,12 +14,12 @@ import org.lwjgl.util.vector.Vector4f;
  */
 public class Quaternion {
 	// Imaginary components.
-	public float x = 0f;
-	public float y = 0f;
-	public float z = 0f;
+	public double x = 0f;
+	public double y = 0f;
+	public double z = 0f;
 
 	// Real component.
-	public float w = 0f;
+	public double w = 0f;
 
 	private Matrix4f rotationMatrix = new Matrix4f();
 	private boolean rotationMatrixNeedsUpdate = true;
@@ -45,7 +45,7 @@ public class Quaternion {
 	}
 
 	//--------------------------------------------------------------------------
-	public Quaternion(float x, float y, float z, float w) {
+	public Quaternion(double x, double y, double z, double w) {
 		init(x, y, z, w);
 	}
 
@@ -58,13 +58,13 @@ public class Quaternion {
 	 * @param axis - axis of rotation.
 	 * @param angle - angle of rotation in radians.
 	 */
-	public Quaternion(Vector3f axis, float angle) {
+	public Quaternion(Vector3d axis, double angle) {
 		// Set to unit Quaternion.
 		fromAxisAngle(axis, angle);
 	}
 
 	//--------------------------------------------------------------------------
-	private void init(float x, float y, float z, float w) {
+	private void init(double x, double y, double z, double w) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -81,22 +81,22 @@ public class Quaternion {
 	 * @param axis - axis of rotation.
 	 * @param angle - angle of rotation in radians.
 	 */
-	public void fromAxisAngle(Vector3f axis, float angle) {
+	public void fromAxisAngle(Vector3d axis, double angle) {
 
 		// Set this quaternion to (sin(angle/2)*u, cos(angle/2))  with u, a unit vector.
 
-		w = (float) (1f / Math.sqrt((axis.x*axis.x + axis.y*axis.y + axis.z*axis.z)));
+		w = (1f / Math.sqrt((axis.x*axis.x + axis.y*axis.y + axis.z*axis.z)));
 
 		x = axis.x * w;
 		y = axis.y * w;
 		z = axis.z * w;
 
-		w =  (float) Math.sin(0.5f * angle);
+		w =  Math.sin(0.5f * angle);
 		x *= w;
 		y *= w;
 		z *= w;
 
-		w = (float) Math.cos(0.5f * angle);
+		w = Math.cos(0.5f * angle);
 
 		invalidateRotationMatrix();
 	}
@@ -116,10 +116,10 @@ public class Quaternion {
 
 		Quaternion o = (Quaternion) other;
 
-		return MathUtils.floatEqualsUlp(x, o.x) &&
-			   MathUtils.floatEqualsUlp(y, o.y) &&
-			   MathUtils.floatEqualsUlp(z, o.z) &&
-			   MathUtils.floatEqualsUlp(w, o.w);
+		return MathUtils.doubleEqualsUlp(x, o.x) &&
+			   MathUtils.doubleEqualsUlp(y, o.y) &&
+			   MathUtils.doubleEqualsUlp(z, o.z) &&
+			   MathUtils.doubleEqualsUlp(w, o.w);
 	}
 
 	//--------------------------------------------------------------------------
@@ -198,10 +198,10 @@ public class Quaternion {
 	 * @param dest
 	 */
 	public static void mult(Quaternion lhs, Quaternion rhs, Quaternion dest) {
-        float x = (lhs.y * rhs.z) - (lhs.z * rhs.y) + (rhs.w * lhs.x) + (lhs.w * rhs.x);
-        float y = (lhs.z * rhs.x) - (lhs.x * rhs.z) + (rhs.w * lhs.y) + (lhs.w * rhs.y);
-        float z = (lhs.x * rhs.y) - (lhs.y * rhs.x) + (rhs.w * lhs.z) + (lhs.w * rhs.z);
-        float w = (lhs.w * rhs.w) - (lhs.x * rhs.x) - (lhs.y * rhs.y) - (lhs.z * rhs.z);
+		double x = (lhs.y * rhs.z) - (lhs.z * rhs.y) + (rhs.w * lhs.x) + (lhs.w * rhs.x);
+		double y = (lhs.z * rhs.x) - (lhs.x * rhs.z) + (rhs.w * lhs.y) + (lhs.w * rhs.y);
+        double z = (lhs.x * rhs.y) - (lhs.y * rhs.x) + (rhs.w * lhs.z) + (lhs.w * rhs.z);
+        double w = (lhs.w * rhs.w) - (lhs.x * rhs.x) - (lhs.y * rhs.y) - (lhs.z * rhs.z);
         
         dest.x = x;
         dest.y = y;
@@ -283,7 +283,7 @@ public class Quaternion {
 	/**
 	 * @return the Euclidean norm (i.e. 2-norm) squared for this Quaternion.
 	 */
-	public float normSquared( ) {
+	public double normSquared( ) {
 		return x*x + y*y + z*z + w*w;
 	}
 
@@ -307,7 +307,7 @@ public class Quaternion {
 	 * Multiply each component of this Quaternion by s.
 	 * @param s - scale factor.
 	 */
-	public void scale(float s) {
+	public void scale(double s) {
 		x *= s;
 		y *= s;
 		z *= s;
@@ -407,17 +407,17 @@ public class Quaternion {
 		if (rotationMatrixNeedsUpdate) {
             float s = 2f / norm();
 
-            dest.m00 = 1 - s * (y * y + z * z);
-            dest.m01 = s * (x * y + w * z);
-            dest.m02 = s * (x * z - w * y);
+            dest.m00 = (float)(1 - s * (y * y + z * z));
+            dest.m01 = (float)(s * (x * y + w * z));
+            dest.m02 = (float)(s * (x * z - w * y));
 
-            dest.m10 = s * (x * y - w * z);
-            dest.m11 = 1 - s * (x * x + z * z);
-            dest.m12 = s * (y * z + w * x);
+            dest.m10 = (float)(s * (x * y - w * z));
+            dest.m11 = (float)(1 - s * (x * x + z * z));
+            dest.m12 = (float)(s * (y * z + w * x));
 
-            dest.m20 = s * (x * z + w * y);
-            dest.m21 = s * (y * z - w * x);
-            dest.m22 = 1 - s * (x * x + y * y);
+            dest.m20 = (float)(s * (x * z + w * y));
+            dest.m21 = (float)(s * (y * z - w * x));
+            dest.m22 = (float)(1 - s * (x * x + y * y));
             
     		Matrix4f.load(dest, rotationMatrix);
     		rotationMatrixNeedsUpdate = false;
@@ -450,10 +450,10 @@ public class Quaternion {
 	public void rotate(Quaternion q) {
 	    if (this == q) return;  // Rotating itself has no effect.
 
-		vRotTemp.x = q.x;
-		vRotTemp.y = q.y;
-		vRotTemp.z = q.z;
-		vRotTemp.w = q.w;
+		vRotTemp.x = (float)q.x;
+		vRotTemp.y = (float)q.y;
+		vRotTemp.z = (float)q.z;
+		vRotTemp.w = (float)q.w;
 
 		this.rotate(vRotTemp);
 
@@ -470,10 +470,10 @@ public class Quaternion {
 	 * 
 	 * @param vec - the <code>Vector3f</code> to be rotated.
 	 */
-	public void rotate(Vector3f vec) {
-		vRotTemp.x = vec.x;
-		vRotTemp.y = vec.y;
-		vRotTemp.z = vec.z;
+	public void rotate(Vector3d vec) {
+		vRotTemp.x = (float)vec.x;
+		vRotTemp.y = (float)vec.y;
+		vRotTemp.z = (float)vec.z;
 		vRotTemp.w = 0f;
 
 		this.rotate(vRotTemp);
@@ -504,20 +504,20 @@ public class Quaternion {
 	}
 
 	//--------------------------------------------------------------------------
-	public void fromAxes(Vector3f xAxis, Vector3f yAxis, Vector3f zAxis) {
+	public void fromAxes(Vector3d xAxis, Vector3d yAxis, Vector3d zAxis) {
 		Matrix4f rotationMatrix = new Matrix4f();
 
-		rotationMatrix.m00 = xAxis.x;
-		rotationMatrix.m01 = xAxis.y;
-		rotationMatrix.m02 = xAxis.z;
+		rotationMatrix.m00 = (float)xAxis.x;
+		rotationMatrix.m01 = (float)xAxis.y;
+		rotationMatrix.m02 = (float)xAxis.z;
 
-		rotationMatrix.m10 = yAxis.x;
-		rotationMatrix.m11 = yAxis.y;
-		rotationMatrix.m12 = yAxis.z;
+		rotationMatrix.m10 = (float)yAxis.x;
+		rotationMatrix.m11 = (float)yAxis.y;
+		rotationMatrix.m12 = (float)yAxis.z;
 
-		rotationMatrix.m20 = zAxis.x;
-		rotationMatrix.m21 = zAxis.y;
-		rotationMatrix.m22 = zAxis.z;
+		rotationMatrix.m20 = (float)zAxis.x;
+		rotationMatrix.m21 = (float)zAxis.y;
+		rotationMatrix.m22 = (float)zAxis.z;
 
 		this.fromRotationMatrix(rotationMatrix);
 	}
@@ -540,8 +540,8 @@ public class Quaternion {
 	     * |y|, or |z|, one of which must be larger than |w|, and at least 1/2.
 	     * 
 	     */
-        float trace = mat.m00 + mat.m11 + mat.m22 + mat.m33;
-        float s;
+        double trace = mat.m00 + mat.m11 + mat.m22 + mat.m33;
+        double s;
         
         if (trace >= 0.0f) {
             s = (float)Math.sqrt(trace);
@@ -554,7 +554,7 @@ public class Quaternion {
     	}
         else {
             // Map indices to values: 0->|x|, 1->|y|, 2->|z|.
-            float matDiag[] = {mat.m11, mat.m22};
+        	double matDiag[] = {mat.m11, mat.m22};
             int index = 0;
             
             // Determine the largest magnitude: |x|, |y|, or |z|.
@@ -564,7 +564,7 @@ public class Quaternion {
             switch(index) {
             case 0:
                 // |x| is largest.
-                s = (float)Math.sqrt(mat.m00 - (mat.m11 + mat.m22) + mat.m33);
+                s = (double)Math.sqrt(mat.m00 - (mat.m11 + mat.m22) + mat.m33);
                 x = s * 0.5f;
                 w = (mat.m12 - mat.m21) / (4f * x);
                 s = 1 / (4f * w);
@@ -574,7 +574,7 @@ public class Quaternion {
                 
             case 1:
                 // |y| is largest.
-                s = (float)Math.sqrt(mat.m11 - (mat.m00 + mat.m22) + mat.m33);
+                s = (double)Math.sqrt(mat.m11 - (mat.m00 + mat.m22) + mat.m33);
                 y = s * 0.5f;
                 w = (mat.m20 - mat.m02) / (4f * y);
                 s = 1 / (4f * w);
@@ -584,7 +584,7 @@ public class Quaternion {
                 
             case 2:
                 // |z| is largest.
-                s = (float)Math.sqrt(mat.m22 - (mat.m00 + mat.m11) + mat.m33);
+                s = (double)Math.sqrt(mat.m22 - (mat.m00 + mat.m11) + mat.m33);
                 z = s * 0.5f;
                 w = (mat.m01 - mat.m10) / (4f * z);
                 s = 1 / (4f * w);
@@ -595,7 +595,7 @@ public class Quaternion {
         }
         
         if (mat.m33 != 1.0f){
-           s = (float)(1f / Math.sqrt(mat.m33));
+           s = (double)(1f / Math.sqrt(mat.m33));
            this.scale(s);
         }
         

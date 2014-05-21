@@ -8,114 +8,61 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Camera {
-	private Vector3f centerPosition = new Vector3f(0f, 0f, -1f);  // world space coordinates.
-	private Vector3f eyePosition = new Vector3f(0f, 0f, 0f);      // world space coordinates.
+	private Vector3d centerPosition = new Vector3d(0, 0, -1);  // world space coordinates.
+	private Vector3d eyePosition = new Vector3d(0, 0, 0);      // world space coordinates.
 
-	// Orientation of camera axes.
-	public Quaternion orientation = new Quaternion(0f, 0f, 0f, 1f); // Identity.
+	public Quaternion orientation = new Quaternion(0, 0, 0, 1); // Identity.
 
-	// Standard reference axes.
-	public static final Vector3f X_AXIS = new Vector3f(1f, 0f, 0f);
-	public static final Vector3f Y_AXIS = new Vector3f(0f, 1f, 0f);
-	public static final Vector3f Z_AXIS = new Vector3f(0f, 0f, 1f);
+	public static final Vector3d X_AXIS = new Vector3d(1, 0, 0);
+	public static final Vector3d Y_AXIS = new Vector3d(0, 1, 0);
+	public static final Vector3d Z_AXIS = new Vector3d(0, 0, 1);
 
-	public Vector3f l = new Vector3f(-1f, 0f, 0f);  // left local camera vector.
-	public Vector3f f = new Vector3f(0f, 0f, -1f);  // forward local camera vector.
-	public Vector3f u = new Vector3f(0f, 1f, 0f);   // up local camera vector.
+	public Vector3d l = new Vector3d(-1, 0, 0);
+	public Vector3d f = new Vector3d(0, 0, -1);
+	public Vector3d u = new Vector3d(0, 1, 0);
 
-	// --------------------------------------------------------------------------
-	public void setPosition(float x, float y, float z) {
+	public void setPosition(double x, double y, double z) {
 		eyePosition.x = x;
 		eyePosition.y = y;
 		eyePosition.z = z;
 	}
 
-	// --------------------------------------------------------------------------
-	public void setPosition(Vector3f position) {
+	public void setPosition(Vector3d position) {
 		setPosition(position.x, position.y, position.z);
 	}
 
-	// --------------------------------------------------------------------------
-	/**
-	 * Translates the Camera using world space axes.
-	 * 
-	 * @param x - movement magnitude along world space x-axis.
-	 * @param y - movement magnitude along world space y-axis.
-	 * @param z - movement magnitude along world space z-axis.
-	 */
-	public void translate(float x, float y, float z) {
+	public void translate(double x, double y, double z) {
 		eyePosition.x += x;
 		eyePosition.y += y;
 		eyePosition.z += z;
 	}
 
-	/**
-	 * Translates the Camera using world space axes.
-	 * 
-	 * @param vec - Vector with movement magnitudes along world space x, y, and
-	 *            z axes.
-	 */
-	// --------------------------------------------------------------------------
-	public void translate(Vector3f vec) {
+	public void translate(Vector3d vec) {
 		translate(vec.x, vec.y, vec.z);
 	}
 
-	// --------------------------------------------------------------------------
-	/**
-	 * Translates the camera relative to itself.
-	 * 
-	 * @param left - translation distance along camera's local left-direction.
-	 * @param up - translation distance along camera's local up-direction.
-	 * @param forward - translation distance along camera's local forward-direction.
-	 */
-	public void translateRelative(float left, float up, float forward) {
+	public void translateRelative(double left, double up, double forward) {
 		eyePosition.x += (left * l.x) + (up * u.x) + (forward * f.x);
 		eyePosition.y += (left * l.y) + (up * u.y) + (forward * f.y);
 		eyePosition.z += (left * l.z) + (up * u.z) + (forward * f.z);
 	}
 
-	// --------------------------------------------------------------------------
 	public void translateRelative(Vector3f vec) {
 		translateRelative(vec.x, vec.y, vec.z);
 	}
 
-	// --------------------------------------------------------------------------
-	/**
-	 * @return a new {@link Vector3f} representing the current eye position of
-	 *         the Camera.
-	 */
-	public Vector3f getPosition() {
-		return new Vector3f(eyePosition.x, eyePosition.y, eyePosition.z);
+	public Vector3d getPosition() {
+		return new Vector3d(eyePosition.x, eyePosition.y, eyePosition.z);
 	}
 
-	// --------------------------------------------------------------------------
-	/**
-	 * Places the camera world position coordinates into dest.
-	 */
-	public void getPosition(Vector3f dest) {
+	public void getPosition(Vector3d dest) {
 	    dest.x = eyePosition.x;
 	    dest.y = eyePosition.y;
 	    dest.z = eyePosition.z;
 	}
 
-	// --------------------------------------------------------------------------
-	/**
-	 * Position the camera at (eyeX, eyeY, eyeZ) in world space, so that it is
-	 * facing the point (centerX, centerY, centerZ) in the center of its view,
-	 * and with up vector given by (upX, upY, upZ).
-	 * 
-	 * @param eyeX
-	 * @param eyeY
-	 * @param eyeZ
-	 * @param centerX
-	 * @param centerY
-	 * @param centerZ
-	 * @param upX
-	 * @param upY
-	 * @param upZ
-	 */
-	public void lookAt(float eyeX, float eyeY, float eyeZ, float centerX,
-			float centerY, float centerZ, float upX, float upY, float upZ) {
+	public void lookAt(double eyeX, double eyeY, double eyeZ, double centerX,
+			double centerY, double centerZ, double upX, double upY, double upZ) {
 
 		centerPosition.x = centerX;
 		centerPosition.y = centerY;
@@ -126,7 +73,7 @@ public class Camera {
 		eyePosition.z = eyeZ;
 
 		// f = centerPosition - eyePosition.
-		Vector3f.sub(centerPosition, eyePosition, f);
+		Vector3d.sub(centerPosition, eyePosition, f);
 
 		// Do nothing if centerPosition ~= eyePostion.
 		if (f.length() <= MathUtils.EPSILON) return;
@@ -138,11 +85,11 @@ public class Camera {
 		u.z = upZ;
 
 		// l = u x f
-		Vector3f.cross(u, f, l);
+		Vector3d.cross(u, f, l);
 		l.normalise();
 
 		// u = f x l
-		Vector3f.cross(f, l, u);
+		Vector3d.cross(f, l, u);
 
 		// Flip f so it points along camera's local z-axis.
 		f.scale(-1f);
@@ -158,30 +105,19 @@ public class Camera {
 		l.scale(-1f);
 	}
 
-	// --------------------------------------------------------------------------
-	/**
-	 * Position the Camera at <code>eyePos</code> in world space, so that it is
-	 * facing with the point <code>centerPos</code> in the center of its view,
-	 * and with up direction given by <code>upDir</code>.
-	 * 
-	 * @param eyePos - world space position of Camera.
-	 * @param centerPos - world space target the Camera is pointed at.
-	 * @param upDir - world space up direction for Camera.
-	 */
-	public void lookAt(Vector3f eyePos, Vector3f centerPos, Vector3f upDir) {
+	public void lookAt(Vector3d eyePos, Vector3d centerPos, Vector3d upDir) {
 		lookAt(eyePos.x, eyePos.y, eyePos.z, centerPos.x, centerPos.y,
 				centerPos.z, upDir.x, upDir.y, upDir.z);
 	}
 
 
-	// --------------------------------------------------------------------------
-	public void lookAt(float centerX, float centerY, float centerZ) {
+	public void lookAt(double centerX, double centerY, double centerZ) {
 		centerPosition.x = centerX;
 		centerPosition.y = centerY;
 		centerPosition.z = centerZ;
 
 		// f = center - eye.
-		Vector3f.sub(centerPosition, eyePosition, f);
+		Vector3d.sub(centerPosition, eyePosition, f);
 
 		// If center ~= eyePosition, do nothing.
 		if (f.lengthSquared() <= MathUtils.EPSILON) return;
@@ -195,10 +131,10 @@ public class Camera {
 			// Borrow l vector for calculation, so we don't have to allocate a
 			// new vector.
 			// l = eye + u
-			Vector3f.add(eyePosition, u, l);
+			Vector3d.add(eyePosition, u, l);
 
 			// t = -1 * (f dot u)
-			float t = -1f * Vector3f.dot(f, u);
+			double t = -1f * Vector3d.dot(f, u);
 
 			// Move point l in the normal direction, f, by t units so that it is
 			// on the plane.
@@ -207,18 +143,18 @@ public class Camera {
 			l.z += t * f.z;
 
 			// u = l - eye.
-			Vector3f.sub(l, eyePosition, u);
+			Vector3d.sub(l, eyePosition, u);
 			u.normalise();
 		}
 
 		// Update l vector given new f and u vectors.
 		// l = u x f
-		Vector3f.cross(u, f, l);
+		Vector3d.cross(u, f, l);
 
 		// If f and u are no longer orthogonal, make them so.
-		if (Vector3f.dot(f, u) > MathUtils.EPSILON) {
+		if (Vector3d.dot(f, u) > MathUtils.EPSILON) {
 			// u = f x l
-			Vector3f.cross(f, l, u);
+			Vector3d.cross(f, l, u);
 			u.normalise();
 		}
 
@@ -238,21 +174,18 @@ public class Camera {
 		l.scale(-1f);
 	}
 
-	// --------------------------------------------------------------------------
-	public void lookAt(Vector3f centerPos) {
+	public void lookAt(Vector3d centerPos) {
 		lookAt(centerPos.x, centerPos.y, centerPos.z);
 	}
 
-	// --------------------------------------------------------------------------
-	public void rotate(Vector3f axis, float angle) {
+	public void rotate(Vector3d axis, double angle) {
 		Quaternion p = new Quaternion(axis, angle);
 		Quaternion.mult(p, orientation, orientation);
 		orientation.normalize();
 	}
 
-	// --------------------------------------------------------------------------
-	public void roll(float angle) {
-		Vector3f localZAxis = new Vector3f(Z_AXIS);
+	public void roll(double angle) {
+		Vector3d localZAxis = new Vector3d(Z_AXIS);
 		orientation.rotate(localZAxis);
 
 		Quaternion q = new Quaternion(localZAxis, angle);
@@ -265,9 +198,8 @@ public class Camera {
 		Quaternion.mult(q, orientation, orientation);
 	}
 
-	// --------------------------------------------------------------------------
-	public void pitch(float angle) {
-		Vector3f localXAxis = new Vector3f(X_AXIS);
+	public void pitch(double angle) {
+		Vector3d localXAxis = new Vector3d(X_AXIS);
 		orientation.rotate(localXAxis);
 
 		Quaternion q = new Quaternion(localXAxis, angle);
@@ -280,9 +212,8 @@ public class Camera {
 		Quaternion.mult(q, orientation, orientation);
 	}
 
-	// --------------------------------------------------------------------------
-	public void yaw(float angle) {
-		Vector3f localYAxis = new Vector3f(Y_AXIS);
+	public void yaw(double angle) {
+		Vector3d localYAxis = new Vector3d(Y_AXIS);
 		orientation.rotate(localYAxis);
 
 		Quaternion q = new Quaternion(localYAxis, angle);
@@ -294,15 +225,7 @@ public class Camera {
 		// orientation = q * orientation.
 		Quaternion.mult(q, orientation, orientation);
 	}
-
-	// --------------------------------------------------------------------------
-	/**
-	 * Gets a new {@link Matrix4f} view matrix representation for this Camera.
-	 * In OpenGL parlance the view matrix transforms points from World Space to
-	 * Camera Space.
-	 * 
-	 * @return a new view matrix
-	 */
+	
 	public Matrix4f getViewMatrix() {
 		orientation.normalize();
 
@@ -327,17 +250,17 @@ public class Camera {
 		// Apply inverse translation from world space origin to
 		// the camera's eye position.
 		Vector3f dist = new Vector3f();
-		dist.x = (-1) * eyePosition.x;
-		dist.y = (-1) * eyePosition.y;
-		dist.z = (-1) * eyePosition.z;
+		dist.x = (float)((-1) * eyePosition.x);
+		dist.y = (float)((-1) * eyePosition.y);
+		dist.z = (float)((-1) * eyePosition.z);
 		viewMatrix.translate(dist);
 
 
 		return viewMatrix;
 	}
 	
-	public Vector3f getRay(){
-		return (Vector3f) new Vector3f(eyePosition.x - centerPosition.x, eyePosition.y - centerPosition.y, eyePosition.z - centerPosition.z).normalise();
+	public Vector3d getRay(){
+		return new Vector3d(f.x, f.y, f.z).normalise();
 	}
 
 	public void applyMatrix() {

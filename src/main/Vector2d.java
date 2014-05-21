@@ -1,6 +1,6 @@
 package main;
 
-public class Vector2d {
+public class Vector2d{
 
 	public double x;
 	public double y;

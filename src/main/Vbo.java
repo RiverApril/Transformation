@@ -18,7 +18,12 @@ public class Vbo {
 	
 	private Vector4d currentColor = Color.red;
 
-	public Vbo(int mode) {
+	public Vbo() {
+		
+	}
+
+	public void begin(int mode) {
+		end();
 		this.mode = mode;
 		count = 0;
 	}
@@ -99,6 +104,10 @@ public class Vbo {
 		addRectPrism(rectPrism.getPosition(), rectPrism.getRadii());
 	}
 
+	public void addRectPrism(RectPrism rectPrism, Color xc, Color yc, Color zc) {
+		addRectPrism(rectPrism.getPosition(), rectPrism.getRadii(), xc, yc, zc);
+	}
+
 	public void addRectPrism(Vector3d pos, Vector3d radii) {
 		add(new Vector3d(pos.x-radii.x, pos.y-radii.y, pos.z-radii.z));
 		add(new Vector3d(pos.x-radii.x, pos.y-radii.y, pos.z+radii.z));
@@ -129,6 +138,40 @@ public class Vbo {
 		add(new Vector3d(pos.x-radii.x, pos.y+radii.y, pos.z+radii.z));
 		add(new Vector3d(pos.x+radii.x, pos.y+radii.y, pos.z+radii.z));
 		add(new Vector3d(pos.x+radii.x, pos.y-radii.y, pos.z+radii.z));
+	}
+
+	public void addRectPrism(Vector3d pos, Vector3d radii, Color xc, Color yc, Color zc) {
+		
+		add(new Vector3d(pos.x-radii.x, pos.y-radii.y, pos.z-radii.z), xc);
+		add(new Vector3d(pos.x-radii.x, pos.y-radii.y, pos.z+radii.z), xc);
+		add(new Vector3d(pos.x-radii.x, pos.y+radii.y, pos.z+radii.z), xc);
+		add(new Vector3d(pos.x-radii.x, pos.y+radii.y, pos.z-radii.z), xc);
+
+		add(new Vector3d(pos.x+radii.x, pos.y-radii.y, pos.z-radii.z), xc);
+		add(new Vector3d(pos.x+radii.x, pos.y-radii.y, pos.z+radii.z), xc);
+		add(new Vector3d(pos.x+radii.x, pos.y+radii.y, pos.z+radii.z), xc);
+		add(new Vector3d(pos.x+radii.x, pos.y+radii.y, pos.z-radii.z), xc);
+
+		add(new Vector3d(pos.x-radii.x, pos.y-radii.y, pos.z-radii.z), yc);
+		add(new Vector3d(pos.x-radii.x, pos.y-radii.y, pos.z+radii.z), yc);
+		add(new Vector3d(pos.x+radii.x, pos.y-radii.y, pos.z+radii.z), yc);
+		add(new Vector3d(pos.x+radii.x, pos.y-radii.y, pos.z-radii.z), yc);
+
+		add(new Vector3d(pos.x-radii.x, pos.y+radii.y, pos.z-radii.z), yc);
+		add(new Vector3d(pos.x-radii.x, pos.y+radii.y, pos.z+radii.z), yc);
+		add(new Vector3d(pos.x+radii.x, pos.y+radii.y, pos.z+radii.z), yc);
+		add(new Vector3d(pos.x+radii.x, pos.y+radii.y, pos.z-radii.z), yc);
+
+		add(new Vector3d(pos.x-radii.x, pos.y-radii.y, pos.z-radii.z), zc);
+		add(new Vector3d(pos.x-radii.x, pos.y+radii.y, pos.z-radii.z), zc);
+		add(new Vector3d(pos.x+radii.x, pos.y+radii.y, pos.z-radii.z), zc);
+		add(new Vector3d(pos.x+radii.x, pos.y-radii.y, pos.z-radii.z), zc);
+
+		add(new Vector3d(pos.x-radii.x, pos.y-radii.y, pos.z+radii.z), zc);
+		add(new Vector3d(pos.x-radii.x, pos.y+radii.y, pos.z+radii.z), zc);
+		add(new Vector3d(pos.x+radii.x, pos.y+radii.y, pos.z+radii.z), zc);
+		add(new Vector3d(pos.x+radii.x, pos.y-radii.y, pos.z+radii.z), zc);
+		
 	}
 	
 	public void setColor(Vector4d color){

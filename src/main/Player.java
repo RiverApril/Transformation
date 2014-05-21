@@ -2,6 +2,7 @@ package main;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Player {
@@ -13,14 +14,27 @@ public class Player {
 	
 	public Structure structure = new Structure();
 
-	private RectPrism bounds = new RectPrism(new Vector3d(structure.camera.getPosition()), new Vector3d(1, 1, 1));
+	private RectPrism bounds = new RectPrism(new Vector3d(structure.camera.getPosition()), new Vector3d(.5, .5, .5));
+	
+	private boolean thirdPersonMode = false;
+	
+	private double reach = 10;
+	
+	private Vbo placeVbo = new Vbo();
+	
+	private Vector3d placeRadii = new Vector3d(1, 1, 1);
 
+	double l = .1;
+	
 	public Player(){
 		structure.camera.setPosition(0, 0, 0);
 	}
 	
 	public void draw(Program program, boolean fill){
-		structure.draw(program, fill);
+		if(thirdPersonMode){
+			structure.draw(program, fill);
+		}
+		placeVbo.draw(fill);
 	}
 	
 	public void update(Program program) {
@@ -33,9 +47,25 @@ public class Player {
 			structure.camera.pitch((float)Math.toRadians(-ydiff/2.0));
 			structure.camera.yaw((float)Math.toRadians(xdiff/2.0));
 			
-			program.viewOffset.x = (xdiff/100.0);
-			program.viewOffset.y = (ydiff/100.0);
-			program.viewOffset.z = -10;
+			/*if(thirdPersonMode){
+				program.viewOffset.x += ((xdiff/100.0)-program.guiViewOffset.x)/10.0;
+				program.viewOffset.y += ((ydiff/100.0)-program.guiViewOffset.y)/10.0;
+				program.viewOffset.z = -10;
+				
+				program.guiViewOffset.x = 0;
+				program.guiViewOffset.y = 0;
+				program.guiViewOffset.z = 0;
+			}else{
+				program.viewOffset.x = 0;
+				program.viewOffset.y = 0;
+				program.viewOffset.z = 0;
+
+				program.guiViewOffset.x += ((xdiff/100.0)-program.guiViewOffset.x)/10;
+				program.guiViewOffset.y += ((ydiff/100.0)-program.guiViewOffset.y)/10;
+				program.guiViewOffset.z = 0;
+			}*/
+			program.viewOffset.z = thirdPersonMode?-10:0;
+			
 		}
 		
 		Vector3f newPlace = new Vector3f();
@@ -72,7 +102,7 @@ public class Player {
 			structure.camera.roll(-rotSpeed);
 		}
 		
-		Vector3f a = new Vector3f();
+		Vector3d a = new Vector3d();
 		//camera.translateRelative(checkCollision(program.currentArea, newPlace));
 		a.x = (newPlace.x * structure.camera.l.x) + (newPlace.y * structure.camera.u.x) + (newPlace.z * structure.camera.f.x);
 		a.y = (newPlace.x * structure.camera.l.y) + (newPlace.y * structure.camera.u.y) + (newPlace.z * structure.camera.f.y);
@@ -80,10 +110,131 @@ public class Player {
 		structure.camera.translate(checkCollision(program.currentArea, a));
 		
 		bounds.setPosition(structure.camera.getPosition());
+		
+		
+		if(KeyboardControl.pressed(KeyboardControl.keyToggleThirdPerson)){
+			thirdPersonMode = !thirdPersonMode;
+		}
+		
+		//if(MouseControl.pressed(MouseControl.ButtonLeft) || MouseControl.pressed(MouseControl.ButtonRight)){
+			double i;
+			double lastGoodLength = 0;
+			boolean exit = false;
+			int hit = -1;
+			RectPrism rp = new RectPrism(new Vector3d(), new Vector3d(.0001, .0001, .0001));
+			for(i=0;i<reach;i+=.0001){
+				rp.setPosition(new Vector3d(structure.camera.getRay().mult(i), new Vector3d(structure.camera.getPosition())));
+				for(int j=0;j<program.currentArea.rectPrisms.size();j++){
+					RectPrism o = program.currentArea.rectPrisms.get(j);
+					if(!rp.collides(o)){
+						lastGoodLength = i;
+					}else{
+						exit = true;
+						hit = j;
+						break;
+					}
+				}
+				if(exit){
+					break;
+				}
+			}
+
+			placeVbo.begin(GL11.GL_QUADS);
+			placeVbo.end();
+
+			boolean xDown = KeyboardControl.down(KeyboardControl.keyEditX);
+			boolean yDown = KeyboardControl.down(KeyboardControl.keyEditY);
+			boolean zDown = KeyboardControl.down(KeyboardControl.keyEditZ);
+			
+			if(lastGoodLength<reach-.01 && lastGoodLength>0){
+				
+				if(MouseControl.pressed(MouseControl.ButtonLeft) && hit>=0){
+					program.currentArea.rectPrisms.remove(hit);
+					program.currentArea.needsUpdate = true;
+				}
+				
+				rp.setRadii(placeRadii);
+				
+				exit = false;
+				
+				for(double k=i;k>0;k-=.0001){
+					rp.setPosition(new Vector3d(structure.camera.getRay().mult(k), new Vector3d(structure.camera.getPosition())).round(l));
+					boolean c = false;
+					for(int j=0;j<program.currentArea.rectPrisms.size();j++){
+						RectPrism o = program.currentArea.rectPrisms.get(j);
+						if(rp.collides(o)){
+							c = true;
+						}
+					}
+					if(c){
+						c = false;
+					}else{
+						exit = true;
+						break;
+					}
+					if(exit){
+						break;
+					}
+				}
+				
+				if(!rp.collides(bounds)){
+					
+					if(MouseControl.pressed(MouseControl.ButtonRight)){
+						program.currentArea.rectPrisms.add(rp);
+						program.currentArea.needsUpdate = true;
+						
+					}
+
+					placeVbo.begin(GL11.GL_QUADS);
+					placeVbo.setColor(new Color(0, 0, 1, .1));
+					placeVbo.addRectPrism(rp, xDown?Color.tRed:Color.tGray, yDown?Color.tGreen:Color.tGray, zDown?Color.tBlue:Color.tGray);
+					placeVbo.end();
+				}
+				
+				int dWheel = Mouse.getDWheel();
+				if(xDown){
+					if(dWheel>0){
+						placeRadii.x+=l;
+					}
+					if(dWheel<0){
+						placeRadii.x-=l;
+					}
+				}
+				
+				if(yDown){
+					if(dWheel>0){
+						placeRadii.y+=l;
+					}
+					if(dWheel<0){
+						placeRadii.y-=l;
+					}
+				}
+				
+				if(zDown){
+					if(dWheel>0){
+						placeRadii.z+=l;
+					}
+					if(dWheel<0){
+						placeRadii.z-=l;
+					}
+				}
+				
+				if(placeRadii.x<l){
+					placeRadii.x=l;
+				}
+				if(placeRadii.y<l){
+					placeRadii.y=l;
+				}
+				if(placeRadii.z<l){
+					placeRadii.z=l;
+				}
+				
+			}
+			
 
 	}
 
-	private Vector3f checkCollision(Area area, Vector3f newPlace) {
+	private Vector3d checkCollision(Area area, Vector3d newPlace) {
 		RectPrism xBounds = new RectPrism(new Vector3d(bounds.getPosition().x+newPlace.x, bounds.getPosition().y, bounds.getPosition().z), bounds.getRadii());
 		RectPrism yBounds = new RectPrism(new Vector3d(bounds.getPosition().x, bounds.getPosition().y+newPlace.y, bounds.getPosition().z), bounds.getRadii());
 		RectPrism zBounds = new RectPrism(new Vector3d(bounds.getPosition().x, bounds.getPosition().y, bounds.getPosition().z+newPlace.z), bounds.getRadii());
