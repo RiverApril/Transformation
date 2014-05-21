@@ -24,7 +24,8 @@ public class Player {
 	
 	private Vector3d placeRadii = new Vector3d(1, 1, 1);
 
-	double l = .1;
+	double l = .2;
+	double l2 = l/2.0;
 	
 	public Player(){
 		structure.camera.setPosition(0, 0, 0);
@@ -121,7 +122,7 @@ public class Player {
 			double lastGoodLength = 0;
 			boolean exit = false;
 			int hit = -1;
-			RectPrism rp = new RectPrism(new Vector3d(), new Vector3d(.0001, .0001, .0001));
+			RectPrism rp = new RectPrism(new Vector3d(), new Vector3d(0, 0, 0));
 			for(i=0;i<reach;i+=.0001){
 				rp.setPosition(new Vector3d(structure.camera.getRay().mult(i), new Vector3d(structure.camera.getPosition())));
 				for(int j=0;j<program.currentArea.rectPrisms.size();j++){
@@ -158,7 +159,7 @@ public class Player {
 				exit = false;
 				
 				for(double k=i;k>0;k-=.0001){
-					rp.setPosition(new Vector3d(structure.camera.getRay().mult(k), new Vector3d(structure.camera.getPosition())).round(l));
+					rp.setPosition(new Vector3d(structure.camera.getRay().mult(k), new Vector3d(structure.camera.getPosition())).round(l2));
 					boolean c = false;
 					for(int j=0;j<program.currentArea.rectPrisms.size();j++){
 						RectPrism o = program.currentArea.rectPrisms.get(j);
@@ -194,39 +195,39 @@ public class Player {
 				int dWheel = Mouse.getDWheel();
 				if(xDown){
 					if(dWheel>0){
-						placeRadii.x+=l;
+						placeRadii.x+=l2;
 					}
 					if(dWheel<0){
-						placeRadii.x-=l;
+						placeRadii.x-=l2;
 					}
 				}
 				
 				if(yDown){
 					if(dWheel>0){
-						placeRadii.y+=l;
+						placeRadii.y+=l2;
 					}
 					if(dWheel<0){
-						placeRadii.y-=l;
+						placeRadii.y-=l2;
 					}
 				}
 				
 				if(zDown){
 					if(dWheel>0){
-						placeRadii.z+=l;
+						placeRadii.z+=l2;
 					}
 					if(dWheel<0){
-						placeRadii.z-=l;
+						placeRadii.z-=l2;
 					}
 				}
 				
-				if(placeRadii.x<l){
-					placeRadii.x=l;
+				if(placeRadii.x<l2){
+					placeRadii.x=l2;
 				}
-				if(placeRadii.y<l){
-					placeRadii.y=l;
+				if(placeRadii.y<l2){
+					placeRadii.y=l2;
 				}
-				if(placeRadii.z<l){
-					placeRadii.z=l;
+				if(placeRadii.z<l2){
+					placeRadii.z=l2;
 				}
 				
 			}

@@ -135,6 +135,6 @@ public class Vector3d {
 	}
 
 	private double round(double v, double l) {
-		return (Math.round(v/l))*l;
+		return (v<0?(-Math.round(-v/l)):(Math.round(v/l)))*l;
 	}
 }
