@@ -10,6 +10,7 @@ public class Player {
 	//public Camera camera = new Camera();
 
 	public float moveSpeed = .2f;
+	public float airSpeed = .2f;
 	public float rotSpeed = .05f;
 	
 	public Structure structure = new Structure();
@@ -18,14 +19,18 @@ public class Player {
 	
 	private boolean thirdPersonMode = false;
 	
-	private double reach = 10;
+	//private double reach = 10;
 	
-	private Vbo placeVbo = new Vbo();
+	//private Vbo placeVbo = new Vbo();
 	
-	private Vector3d placeRadii = new Vector3d(1, 1, 1);
+	//private Vector3d placeRadii = new Vector3d(1, 1, 1);
 
 	double l = .2;
 	double l2 = l/2.0;
+	
+	private Vector3d velocity = new Vector3d();
+	
+	private double friction = .9;
 	
 	public Player(){
 		structure.camera.setPosition(0, 0, 0);
@@ -69,31 +74,8 @@ public class Player {
 			
 		}
 		
-		Vector3f newPlace = new Vector3f();
+		Vector3d newPlace = new Vector3d();
 		
-		if (KeyboardControl.down(KeyboardControl.keyMoveForward)) {
-			newPlace.z+=moveSpeed;
-		}
-		
-		if (KeyboardControl.down(KeyboardControl.keyMoveBackward)) {
-			newPlace.z-=moveSpeed;
-		}
-		
-		if (KeyboardControl.down(KeyboardControl.keyMoveLeft)) {
-			newPlace.x+=moveSpeed;
-		}
-		
-		if (KeyboardControl.down(KeyboardControl.keyMoveRight)) {
-			newPlace.x-=moveSpeed;
-		}
-		
-		if (KeyboardControl.down(KeyboardControl.keyMoveUp)) {
-			newPlace.y+=moveSpeed;
-		}
-		
-		if (KeyboardControl.down(KeyboardControl.keyMoveDown)) {
-			newPlace.y-=moveSpeed;
-		}
 		
 		if (KeyboardControl.down(KeyboardControl.keyRotateLeft)) {
 			structure.camera.roll(rotSpeed);
@@ -103,12 +85,37 @@ public class Player {
 			structure.camera.roll(-rotSpeed);
 		}
 		
-		Vector3d a = new Vector3d();
-		//camera.translateRelative(checkCollision(program.currentArea, newPlace));
-		a.x = (newPlace.x * structure.camera.l.x) + (newPlace.y * structure.camera.u.x) + (newPlace.z * structure.camera.f.x);
-		a.y = (newPlace.x * structure.camera.l.y) + (newPlace.y * structure.camera.u.y) + (newPlace.z * structure.camera.f.y);
-		a.z = (newPlace.x * structure.camera.l.z) + (newPlace.y * structure.camera.u.z) + (newPlace.z * structure.camera.f.z);
-		structure.camera.translate(checkCollision(program.currentArea, a));
+		if (KeyboardControl.down(KeyboardControl.keyMoveForward)) {
+			newPlace.z+=1;
+		}
+		
+		if (KeyboardControl.down(KeyboardControl.keyMoveBackward)) {
+			newPlace.z-=1;
+		}
+		
+		if (KeyboardControl.down(KeyboardControl.keyMoveLeft)) {
+			newPlace.x+=1;
+		}
+		
+		if (KeyboardControl.down(KeyboardControl.keyMoveRight)) {
+			newPlace.x-=1;
+		}
+		
+		if (KeyboardControl.down(KeyboardControl.keyMoveUp)) {
+			newPlace.y+=1;
+		}
+		
+		if (KeyboardControl.down(KeyboardControl.keyMoveDown)) {
+			newPlace.y-=1;
+		}
+		
+		newPlace = newPlace.mult(airSpeed);
+		newPlace = newPlace.mult(moveSpeed);
+		
+		velocity.x += (newPlace.x * structure.camera.l.x) + (newPlace.y * structure.camera.u.x) + (newPlace.z * structure.camera.f.x);
+		velocity.y += (newPlace.x * structure.camera.l.y) + (newPlace.y * structure.camera.u.y) + (newPlace.z * structure.camera.f.y);
+		velocity.z += (newPlace.x * structure.camera.l.z) + (newPlace.y * structure.camera.u.z) + (newPlace.z * structure.camera.f.z);
+		structure.camera.translate(checkCollision(program.currentArea, velocity));
 		
 		bounds.setPosition(structure.camera.getPosition());
 		
@@ -257,12 +264,18 @@ public class Player {
 			RectPrism rectPrism = area.rectPrisms.get(i);
 			if(rectPrism.collides(xBounds)){
 				newPlace.x = 0;
+				velocity.y *= friction;
+				velocity.z *= friction;
 			}
 			if(rectPrism.collides(yBounds)){
 				newPlace.y = 0;
+				velocity.x *= friction;
+				velocity.z *= friction;
 			}
 			if(rectPrism.collides(zBounds)){
 				newPlace.z = 0;
+				velocity.x *= friction;
+				velocity.y *= friction;
 			}
 		}
 		

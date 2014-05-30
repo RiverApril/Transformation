@@ -5,12 +5,21 @@ import org.lwjgl.opengl.GL11;
 public class Ship extends Area {
 
 	public Ship(){
-		//rectPrisms.add(new RectPrism(new Vector3d(0, -2, 0), new Vector3d(4, .1, 4)));
-		//rectPrisms.add(new RectPrism(new Vector3d(0, .1, -4.1), new Vector3d(4, 2, .1)));
-		//rectPrisms.add(new RectPrism(new Vector3d(0, .1, 4.1), new Vector3d(4, 2, .1)));
-		//rectPrisms.add(new RectPrism(new Vector3d(-4.1, .1, 0), new Vector3d(.1, 2, 4)));
-		//rectPrisms.add(new RectPrism(new Vector3d(4.1, .1, 0), new Vector3d(.1, 2, 4)));
-		rectPrisms.add(new RectPrism(new Vector3d(2, 0, 0), new Vector3d(1, 1, 1)));
+		
+		double s = 100;
+		double w = .1;
+		double d = s+w;
+		
+		rectPrisms.add(new RectPrism(new Vector3d(0, -d, 0), new Vector3d(s, w, s)));
+		rectPrisms.add(new RectPrism(new Vector3d(0, d, 0), new Vector3d(s, w, s)));
+		
+		rectPrisms.add(new RectPrism(new Vector3d(-d, 0, 0), new Vector3d(w, s, s)));
+		rectPrisms.add(new RectPrism(new Vector3d(d, 0, 0), new Vector3d(w, s, s)));
+		
+		rectPrisms.add(new RectPrism(new Vector3d(0, 0, -d), new Vector3d(s, s, w)));
+		rectPrisms.add(new RectPrism(new Vector3d(0, 0, d), new Vector3d(s, s, w)));
+		
+		//rectPrisms.add(new RectPrism(new Vector3d(2, 0, 0), new Vector3d(1, 1, 1)));
 	}
 
 	@Override
